@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Principes SOLID Expliqués</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        h1 {
+            color: #007BFF;
+        }
+        h2 {
+            color: #006BFF;
+        }
+        code {
+            background-color: #eaeaea;
+            padding: 2px 4px;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .bad-example, .good-example {
+            background-color: #eee;
+            border-left: 5px solid red;
+            padding: 10px;
+            margin: 20px 0;
+        }
+        .good-example {
+            border-color: green;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Principes SOLID : Mauvaises et Bonnes Pratiques</h1>
+        <h2>1. Single Responsibility Principle (SRP)</h2>
+        <div class="bad-example">
+            <h3>Mauvaise façon :</h3>
+            <code>
+                class Employe:<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;def __init__(self, nom, adresse):<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.nom = nom<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.adresse = adresse<br>
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;def sauvegarder_employe(self, employe):<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pass  # Code pour sauvegarder l'employé<br>
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;def charger_employe(self, id):<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pass  # Code pour charger un employé<br>
+            </code>
+        </div>
+        <div class="good-example">
+            <h3>Bonne façon :</h3>
+            <code>
+                class Employe:<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;def __init__(self, nom, adresse):<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.nom = nom<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.adresse = adresse<br>
+                <br>
+                class GestionEmploye:<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;def sauvegarder_employe(self, employe):<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pass  # Code pour sauvegarder l'employé<br>
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;def charger_employe(self, id):<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pass  # Code pour charger un employé<br>
+            </code>
+        </div>
+        <h2>2. Open/Closed Principle (OCP)</h2>
+        <div class="bad-example">
+            <h3>Mauvaise façon :</h3>
+            <code>
+                class Filtre:<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;def filtrer_par_couleur(self, produits, couleur):<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return [p for p in produits if p.couleur == couleur]<br>
+                <br>
+                &nbsp;&nbsp;&nbsp;&nbsp;# Ajout d'une nouvelle fonctionnalité<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;def filtrer_par_taille(self, produits, taille):<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return [p for p in produits if p.taille == taille]<br>
+            </code>
+        </div>
+        <div class="good-example">
+            <h3>Bonne façon :</h3>
+            <code>
+                class Specification:<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;def est_satisfait(self, item):<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pass<br>
+                <br>
+                class Filtre:<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;def filtrer(self, items, spec):<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return [item for item in items if spec.est_satisfait(item)]<br>
+                <br>
+                class CouleurSpecification(Specification):<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;def __init__(self, couleur):<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.couleur = couleur<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;def est_satisfait(self, item):<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return item.couleur == self.couleur<br>
+                <br>
+                class TailleSpecification(Specification):<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;def __init__(self, taille):<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.taille = taille<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;def est_satisfait(self, item):<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return item.taille == self.taille<br>
+            </code>
+        </div>
+
+        <h2>3. Liskov Substitution Principle (LSP)</h2>
+        <div class="bad-example">
+            <h3>Mauvaise façon :</h3>
+            <code>
+                class Oiseau:<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;def voler(self):<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pass<br>
+                <br>
+                class Canard(Oiseau):<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;def voler(self):<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print("Canard qui vole")<br>
+                <br>
+                class Autruche(Oiseau):<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;def voler(self):<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;raise Exception("Les autruches ne volent pas")<br>
+            </code>
+        </div>
+        <div class="good-example">
+            <h3>Bonne façon :</h3>
+            <code>
+                class Oiseau:<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;# Classe de base pour tous les oiseaux<br>
+                <br>
+                class OiseauVolant(Oiseau):<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;def voler(self):<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pass<br>
+                <br>
+                class Canard(OiseauVolant):<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;def voler(self):<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print("Canard qui vole")<br>
+                <br>
+                class Autruche(Oiseau):<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;# Pas de méthode voler<br>
+            </code>
+        </div>
+
+        <h2>4. Interface Segregation Principle (ISP)</h2>
+        <div class="bad-example">
+            <h3>Mauvaise façon :</h3>
+            <code>
+                class Machine:<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;def imprimer(self, document):<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pass<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;def faxer(self, document):<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pass<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;def scanner(self, document):<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pass<br>
+            </code>
+        </div>
+        <div class="good-example">
+            <h3>Bonne façon :</h3>
+            <code>
+                class Imprimante:<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;def imprimer(self, document):<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pass<br>
+                <br>
+                class Fax:<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;def faxer(self, document):<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pass<br>
+                <br>
+                class Scanner:<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;def scanner(self, document):<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pass<br>
+            </code>
+        </div>
+
+        <h2>5. Dependency Inversion Principle (DIP)</h2>
+        <div class="bad-example">
+            <h3>Mauvaise façon :</h3>
+            <code>
+                class Lampe:<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;def allumer(self):<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pass<br>
+                <br>
+                class Interrupteur:<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;def __init__(self):<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.lampe = Lampe()<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;def operation(self):<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.lampe.allumer()<br>
+            </code>
+        </div>
+        <div class="good-example">
+            <h3>Bonne façon :</h3>
+            <code>
+                class DispositifElectrique:<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;def operation(self):<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pass<br>
+                <br>
+                class Lampe(DispositifElectrique):<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;def operation(self):<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print("Lampe allumée")<br>
+                <br>
+                class Interrupteur:<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;def __init__(self, dispositif):<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.dispositif = dispositif<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;def actionner(self):<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.dispositif.operation()<br>
+            </code>
+        </div>
+    </div>
+</body>
+</html>
+
+    </div>
+</body>
+</html>
